@@ -1,0 +1,23 @@
+name: Create a PR for new tags on upstream repository
+description: Create a PR for new tags on upstream repository.
+author: Onfocus
+
+inputs:
+  upstream_repo:
+    description: URL of GitHub public upstream repo
+    required: true
+  target_branch:
+    description: Branch to merge into downstream
+    required: false
+    default: "main"
+
+runs:
+  using: "docker"
+  image: "ubuntu:latest"
+  args:
+    - ${{ inputs.upstream_repo }}
+    - ${{ inputs.target_branch }}
+
+branding:
+  icon: "git-merge"
+  color: "blue"
