@@ -34,8 +34,15 @@ runs:
         LOCAL_LATEST=$(git tag -l --sort=-v:refname | head -n 1 | xargs)
         LOCAL_LATEST_TIME=$(git log --tags --simplify-by-decoration --pretty="format:%at" $LOCAL_LATEST^..$LOCAL_LATEST)
         RELEASE_URL="https://github.com/$UPSTREAM_REPO/releases/tag/${LATEST}"
-        if [ $LATEST -gt $LOCAL_LATEST ]; then
+        if [ $LATEST_TIME -gt $LOCAL_LATEST_TIME ]; then
             BRANCH_NAME="chore/sync-$LATEST"
+
+            OPEN_PR=$(gh pr list -S 'is:pr is:open "Sync $LATEST"' --json headRefName -t '{{range .}}{{.headRefName}}{{end}}' || '')
+            if [ "$OPEN_PR" != "" ]; then
+              echo "A PR already exists for this sync"
+              exit 0
+            fi
+
             git fetch upstream refs/tags/$LATEST:refs/tags/$LATEST
             git branch -D chore/sync-$LATEST 2&>/dev/null || true
             git switch -c chore/sync-$LATEST $LATEST
