@@ -32,9 +32,9 @@ runs:
         LATEST=$(gh release list -L 1 -R $UPSTREAM_REPO --json tagName -t '{{range .}}{{.tagName}}{{end}}')
         LATEST_TIME=$(gh release list -L 1 -R $UPSTREAM_REPO --json createdAt -t '{{range .}}{{.createdAt}}{{end}}')
         LATEST_TIME=$(date -d "$LATEST_TIME" +"%s")
-        CURRENT_BRANCH=$(git branch --show-current)
-        LOCAL_LATEST=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%S" $CURRENT_BRANCH^..$CURRENT_BRANCH)
-        LOCAL_LATEST_TIME=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%at" $CURRENT_BRANCH^..$CURRENT_BRANCH)
+        CURRENT_COMMIT=$(git log --pretty="format:%H" | head -n 1)
+        LOCAL_LATEST=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%S" $CURRENT_COMMIT^..$CURRENT_COMMIT)
+        LOCAL_LATEST_TIME=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%at" $CURRENT_COMMIT^..$CURRENT_COMMIT)
         RELEASE_URL="https://github.com/$UPSTREAM_REPO/releases/tag/${LATEST}"
         if [ $LATEST_TIME -gt $LOCAL_LATEST_TIME ]; then
             BRANCH_NAME="chore/sync-$LATEST"
