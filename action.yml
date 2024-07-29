@@ -32,6 +32,7 @@ runs:
         LATEST=$(gh release list -L 1 -R $UPSTREAM_REPO --json tagName -t '{{range .}}{{.tagName}}{{end}}')
         LATEST_TIME=$(gh release list -L 1 -R $UPSTREAM_REPO --json createdAt -t '{{range .}}{{.createdAt}}{{end}}')
         LATEST_TIME=$(date -d "$LATEST_TIME" +"%s")
+        git pull
         CURRENT_COMMIT=$(git log --pretty="format:%H" | head -n 1)
         LOCAL_LATEST=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%S" $CURRENT_COMMIT^..$CURRENT_COMMIT)
         LOCAL_LATEST_TIME=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%at" $CURRENT_COMMIT^..$CURRENT_COMMIT)
