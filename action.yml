@@ -30,7 +30,8 @@ runs:
 
         git fetch --tags
         LATEST=$(gh release list -L 1 -R $UPSTREAM_REPO --json tagName -t '{{range .}}{{.tagName}}{{end}}')
-        LATEST_TIME=$(gh release list -L 1 -R $UPSTREAM_REPO --json createdAt -t '{{range .}}{{.createdAt}}{{end}}' | date +"%s")
+        LATEST_TIME=$(gh release list -L 1 -R $UPSTREAM_REPO --json createdAt -t '{{range .}}{{.createdAt}}{{end}}')
+        LATEST_TIME=$(date -d "$LATEST_TIME" +"%s")
         LOCAL_LATEST=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%S" HEAD^..HEAD)
         LOCAL_LATEST_TIME=$(git log --tags --not --remotes=upstream --simplify-by-decoration --pretty="format:%at" HEAD^..HEAD)
         RELEASE_URL="https://github.com/$UPSTREAM_REPO/releases/tag/${LATEST}"
