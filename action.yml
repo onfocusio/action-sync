@@ -14,18 +14,24 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v4
     - name: Run script
-      uses: actions/checkout@v4
       shell: bash
+      env:
+        UPSTREAM_REPO: ${{ inputs.upstream_repo }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
       run: |
         set -x -e
-        OWNER_REPO=`git remote -v | grep -w origin | head -n 1 | grep -Po 'git@github\.com:\K.+?(?=\.git)'`
+        echo "UPSTREAM_REPO=$UPSTREAM_REPO"
+        echo "TARGET_BRANCH=$TARGET_BRANCH"
+        OWNER_REPO=$(git remote -v | grep -w origin | head -n 1 | grep -Po 'https://github\.com/\K.+?(?= )')
 
-        git remote -v | grep -w upstream || git remote add upstream git@github.com:${UPSTREAM_REPO}.git
+        git remote -v | grep -w upstream || git remote add upstream https://github.com/$UPSTREAM_REPO.git
 
-        LATEST=`gh release list -L 1 -R ${UPSTREAM_REPO} --json tagName -t '{{range .}}{{.tagName}}{{end}}'`
-        LOCAL_LATEST=`git tag -l --sort=-v:refname | head -n 1 | xargs`
-        RELEASE_URL="https://github.com/${UPSTREAM_REPO}/releases/tag/${LATEST}"
+        git fetch --tags
+        LATEST=$(gh release list -L 1 -R $UPSTREAM_REPO --json tagName -t '{{range .}}{{.tagName}}{{end}}')
+        LOCAL_LATEST=$(git tag -l --sort=-v:refname | head -n 1 | xargs)
+        RELEASE_URL="https://github.com/$UPSTREAM_REPO/releases/tag/${LATEST}"
         if [ $LATEST != $LOCAL_LATEST ]; then
             BRANCH_NAME="chore/sync-$LATEST"
             git fetch upstream refs/tags/$LATEST:refs/tags/$LATEST
@@ -34,9 +40,6 @@ runs:
             git push -u origin chore/sync-$LATEST
             gh pr create -B $TARGET_BRANCH -t "Sync $LATEST" -b $RELEASE_URL -R $OWNER_REPO
         fi
-      env:
-        UPSTREAM_REPO: ${{ inputs.upstream_repo }}
-        TARGET_BRANCH: ${{ inputs.target_branch }}
 
 branding:
   icon: "git-merge"

@@ -13,8 +13,6 @@ This Github Action checks if an upstream repository has a release with a tag hig
 name: Sync PR
 
 env:
-  UPSTREAM_REPO: "prebid/prebid-server"
-  TARGET_BRANCH: "adagio"
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # This runs every day on 7am UTC
@@ -25,13 +23,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Create sync PR
       - uses: actions/checkout@v4
-      - uses: onfocusio/action-sync@v0.1.6
-        with: 
-          upstream_repo: ${{ env.UPSTREAM_URL }}
-          target_branch: ${{ env.UPSTREAM_BRANCH }}
+      - name: Create sync PR
+        uses: onfocusio/action-sync@v0.1.7
+        with:
+          upstream_repo: "owner/repo"
+          target_branch: "main"
 ```
