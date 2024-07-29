@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Create sync PR
       - uses: actions/checkout@v4
-      - uses: onfocusio/action-sync@v0.1.4
+      - uses: onfocusio/action-sync@v0.1.6
         with: 
           upstream_repo: ${{ env.UPSTREAM_URL }}
           target_branch: ${{ env.UPSTREAM_BRANCH }}
