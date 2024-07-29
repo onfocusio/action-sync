@@ -13,7 +13,7 @@ inputs:
 
 runs:
   using: "docker"
-  image: "ubuntu:latest"
+  image: "ubuntu-latest"
   args:
     - ${{ inputs.upstream_repo }}
     - ${{ inputs.target_branch }}
