@@ -38,7 +38,7 @@ runs:
         if [ $LATEST_TIME -gt $LOCAL_LATEST_TIME ]; then
             BRANCH_NAME="chore/sync-$LATEST"
 
-            if [ $(git rev-parse --verify chore/sync-$LATEST 2>/dev/null) ]; then
+            if [ $(git rev-parse --verify origin/chore/sync-$LATEST 2>/dev/null) ]; then
               echo "A branch already exists for this sync"
               exit 0
             fi
