@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Create sync PR
-        uses: onfocusio/action-sync@v0.1.17
+        uses: onfocusio/action-sync@v0.1.18
         with:
           upstream_repo: "owner/repo"
           target_branch: "main"
