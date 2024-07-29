@@ -38,7 +38,7 @@ runs:
         if [ $LATEST_TIME -gt $LOCAL_LATEST_TIME ]; then
             BRANCH_NAME="chore/sync-$LATEST"
 
-            OPEN_PR=$(gh pr list -S "is:pr is:open \"Sync $LATEST\"" --json headRefName -t '{{range .}}{{.headRefName}}{{end}}' || '')
+            OPEN_PR=$(gh pr list -S "is:pr is:open \"Sync $LATEST\"" --json headRefName -t '{{range .}}{{.headRefName}}{{end}}')
             if [ "$OPEN_PR" != "" ]; then
               echo "An open PR already exists for this sync"
               exit 0
