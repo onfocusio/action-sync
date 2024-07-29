@@ -30,9 +30,11 @@ runs:
 
         git fetch --tags
         LATEST=$(gh release list -L 1 -R $UPSTREAM_REPO --json tagName -t '{{range .}}{{.tagName}}{{end}}')
+        LATEST_TIME=$(gh release list -L 1 -R $UPSTREAM_REPO --json createdAt -t '{{range .}}{{.createdAt}}{{end}}' | date +"%s")
         LOCAL_LATEST=$(git tag -l --sort=-v:refname | head -n 1 | xargs)
+        LOCAL_LATEST_TIME=$(git log --tags --simplify-by-decoration --pretty="format:%at" $LOCAL_LATEST^..$LOCAL_LATEST)
         RELEASE_URL="https://github.com/$UPSTREAM_REPO/releases/tag/${LATEST}"
-        if [ $LATEST != $LOCAL_LATEST ]; then
+        if [ $LATEST -gt $LOCAL_LATEST ]; then
             BRANCH_NAME="chore/sync-$LATEST"
             git fetch upstream refs/tags/$LATEST:refs/tags/$LATEST
             git branch -D chore/sync-$LATEST 2&>/dev/null || true
