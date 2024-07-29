@@ -12,11 +12,11 @@ inputs:
     default: "main"
 
 runs:
-  using: "docker"
-  image: "ubuntu-latest"
-  args:
-    - ${{ inputs.upstream_repo }}
-    - ${{ inputs.target_branch }}
+  using: "composite"
+  steps:
+    - name: Run script
+      run: "entrypoint.sh '${{ inputs.upstream_repo }}' '${{ inputs.target_branch }}'"
+      shell: bash
 
 branding:
   icon: "git-merge"
