@@ -15,8 +15,11 @@ runs:
   using: "composite"
   steps:
     - name: Run script
-      run: "entrypoint.sh '${{ inputs.upstream_repo }}' '${{ inputs.target_branch }}'"
+      run: "./entrypoint.sh $UPSTREAM_REPO $TARGET_BRANCH"
       shell: bash
+      env:
+        UPSTREAM_REPO: ${{ inputs.upstream_repo }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
 
 branding:
   icon: "git-merge"
