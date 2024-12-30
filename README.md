@@ -32,4 +32,5 @@ jobs:
         with:
           upstream_repo: "owner/repo"
           target_branch: "main"
+          negate_workflow_changes: "true"
 ```
