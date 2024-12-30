@@ -10,6 +10,9 @@ inputs:
     description: Branch to merge into downstream
     required: false
     default: "main"
+  negate_workflow_changes:
+    description: Setting this to "true" will automatically create a commit removing all changes on ".github/workflows/*"
+    default: "false"
 
 runs:
   using: "composite"
@@ -20,6 +23,7 @@ runs:
       env:
         UPSTREAM_REPO: ${{ inputs.upstream_repo }}
         TARGET_BRANCH: ${{ inputs.target_branch }}
+        NEGATE_WORKFLOW_CHANGES: ${{ inputs.negate_workflow_changes }}
       run: |
         set -x -e
         echo "UPSTREAM_REPO=$UPSTREAM_REPO"
@@ -46,6 +50,12 @@ runs:
             git fetch upstream refs/tags/$LATEST:refs/tags/$LATEST
             git branch -D chore/sync-$LATEST 2&>/dev/null || true
             git switch -c chore/sync-$LATEST $LATEST
+            if [ $NEGATE_WORKFLOW_CHANGES = "true" ]; then
+              git restore --source=$TARGET_BRANCH .github/workflows/*
+              if [ -n "$(git status --porcelain)" ]; then
+                git commit -m "CI: Negate workflow changes"
+              fi
+            fi
             git push -u origin chore/sync-$LATEST
             gh pr create -B $TARGET_BRANCH -t "Sync $LATEST" -b $RELEASE_URL -R $OWNER_REPO
         fi
